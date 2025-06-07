@@ -1,0 +1,575 @@
+/* General Styles */
+:root {
+    --primary-color: #C77DFF; /* Purple accent */
+    --secondary-color: #FF6B6B; /* Pink accent */
+    --text-color-light: #f8f9fa;
+    --text-color-dark: #333;
+    --gradient-start: #4A00E0; /* Darker Purple */
+    --gradient-end: #8E2DE2;   /* Lighter Purple/Violet */
+    --card-bg: rgba(255, 255, 255, 0.05); /* Slightly transparent white for cards */
+    --card-border: rgba(255, 255, 255, 0.1); /* Subtle white border for cards */
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom right, var(--gradient-start), var(--gradient-end));
+    color: var(--text-color-light);
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
+    scroll-behavior: smooth; /* Smooth scrolling when clicking nav links */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1, h2, h3, h4 {
+    color: var(--text-color-light);
+    margin-bottom: 1em;
+}
+
+h2 {
+    font-size: 2.5em;
+    text-align: center;
+    padding-bottom: 0.5em;
+    border-bottom: 2px solid var(--primary-color);
+    margin-bottom: 1.5em;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--secondary-color);
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Header and Navigation */
+header {
+    background: rgba(0, 0, 0, 0.3); /* Semi-transparent black background */
+    position: fixed; /* Stays at the top when scrolling */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100; /* Ensures it stays on top of other content */
+    padding: 15px 0;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between; /* Puts logo on left, nav links on right */
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+}
+
+.nav-links li {
+    margin-left: 25px; /* Spacing between navigation items */
+}
+
+.nav-links a {
+    color: var(--text-color-light);
+    font-weight: 500;
+    padding: 8px 0;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    background: var(--primary-color);
+    bottom: 0;
+    left: 0;
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+    width: 100%; /* Underline effect on hover/active */
+}
+
+/* Hero Section (Home) */
+.hero-section {
+    padding: 150px 0 100px; /* Top padding to account for fixed header */
+    position: relative;
+    overflow: hidden; /* Important for containing 3D shapes */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Make sure it takes at least full viewport height */
+}
+
+.hero-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px; /* Space between image and text */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    z-index: 10; /* Ensure content is above 3D shapes */
+    position: relative;
+}
+
+.hero-image-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+}
+
+#floating-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Behind the content */
+    pointer-events: none; /* Allows clicks to pass through to underlying elements */
+}
+
+.profile-image-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%; /* Makes the image circular */
+    overflow: hidden;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--box-shadow);
+    position: relative;
+    z-index: 2; /* In front of floating shapes */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1); /* Fallback background if image not found */
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image covers the circular area */
+    display: block;
+}
+
+.hero-text {
+    text-align: left;
+    max-width: 500px;
+}
+
+.hero-text h1 {
+    font-size: 3em;
+    margin-bottom: 0.5em;
+}
+
+.hero-subtitle {
+    color: var(--primary-color);
+    font-size: 1.5em;
+    font-weight: 300;
+    margin-bottom: 1em;
+}
+
+.scroll-down {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--text-color-light);
+    font-size: 1.5em;
+    z-index: 10;
+}
+
+.scroll-down a {
+    color: var(--text-color-light);
+}
+
+.scroll-down i {
+    animation: bounce 1.5s infinite alternate; /* Bouncing arrow animation */
+}
+
+@keyframes bounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(10px); }
+}
+
+/* Section Common Styles */
+section {
+    padding: 80px 0;
+    position: relative;
+    z-index: 5; /* Ensures sections are above any main background 3D effects */
+}
+
+section h2 {
+    margin-bottom: 40px;
+}
+
+/* About Section */
+.about-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.about-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease;
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+}
+
+.about-card i {
+    font-size: 2em;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.about-card h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+/* Skills Section */
+.skills-category {
+    margin-bottom: 40px;
+}
+
+.skills-category h3 {
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+.skill-bar {
+    margin-bottom: 15px;
+}
+
+.skill-bar span {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.progress-bar {
+    background-color: rgba(255, 255, 255, 0.1);
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    font-size: 0.8em;
+    color: var(--text-color-light);
+    transition: width 0.8s ease-out; /* Smooth fill animation for progress bars */
+}
+
+/* Experience Section */
+.experience-item {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    box-shadow: var(--box-shadow);
+}
+
+.experience-item h3 {
+    font-size: 1.8em;
+    margin-bottom: 5px;
+}
+
+.experience-item h4 {
+    font-size: 1.2em;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.experience-duration {
+    color: var(--secondary-color);
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+.experience-item ul {
+    padding-left: 20px;
+    list-style: disc;
+}
+
+.experience-item li {
+    margin-bottom: 8px;
+}
+
+/* Projects Section */
+.project-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    box-shadow: var(--box-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.project-info {
+    flex-grow: 1;
+}
+
+.project-info h3 {
+    font-size: 1.6em;
+    margin-bottom: 10px;
+}
+
+.project-description {
+    color: var(--text-color-light);
+    margin-bottom: 15px;
+}
+
+.tech-badge {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-color-light);
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+    font-size: 0.9em;
+}
+
+.live-link {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    padding: 10px 20px;
+    border: none; /* Remove default button border */
+    border-radius: 5px;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.live-link:hover {
+    background-color: var(--secondary-color);
+}
+
+.project-status {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: var(--text-color-light);
+}
+
+.project-status.live {
+    background-color: #2ecc71; /* Green */
+}
+
+.project-status.completed {
+    background-color: #3498db; /* Blue */
+}
+
+/* Contact Section */
+.contact-section {
+    padding: 80px 0;
+}
+
+.contact-details, .contact-form {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    box-shadow: var(--box-shadow);
+}
+
+.contact-details h3, .contact-form h3 {
+    font-size: 1.6em;
+    margin-bottom: 20px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 15px;
+}
+
+.contact-details p {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.contact-details i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.social-links a {
+    display: inline-block;
+    font-size: 1.5em;
+    margin-right: 15px;
+    color: var(--text-color-light); /* Default color for social icons */
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--primary-color); /* Hover effect for social icons */
+}
+
+.contact-form form {
+    display: grid;
+    gap: 15px;
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: transparent; /* Transparent input background */
+    color: var(--text-color-light);
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 1em;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.7); /* Placeholder text color */
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(199, 125, 255, 0.25); /* Focus highlight */
+}
+
+.submit-btn {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Footer */
+footer {
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--text-color-light);
+    text-align: center;
+    padding: 30px 0;
+    font-size: 0.9em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-container {
+        flex-direction: column; /* Stack image and text vertically */
+        text-align: center;
+    }
+
+    .hero-text {
+        text-align: center;
+    }
+
+    .nav-links {
+        flex-direction: column; /* Stack nav links vertically on small screens */
+        align-items: center;
+        margin-top: 15px;
+    }
+
+    .nav-links li {
+        margin: 8px 0; /* Adjust spacing */
+    }
+
+    h1 {
+        font-size: 2.5em;
+    }
+
+    h2 {
+        font-size: 2em;
+    }
+
+    .about-cards {
+        grid-template-columns: 1fr; /* Stack about cards vertically */
+    }
+
+    .project-card {
+        flex-direction: column; /* Stack project info and status vertically */
+        align-items: flex-start;
+    }
+
+    .project-status {
+        position: static; /* Remove absolute positioning */
+        margin-top: 10px; /* Add space below project info */
+    }
+
+    .contact-details, .contact-form {
+        padding: 20px; /* Smaller padding on mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        padding-top: 120px;
+    }
+
+    .hero-text h1 {
+        font-size: 2em;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2em;
+    }
+
+    header .container {
+        flex-direction: column;
+    }
+
+    .logo {
+        margin-bottom: 10px;
+    }
+}
