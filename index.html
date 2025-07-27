@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prince Portfolio</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        /* General Styles */
+        :root {
+            --primary-color: #7d7fff; /* Purple accent */
+            --secondary-color: #FF6B6B; /* Pink accent */
+            --text-color-light: #f8f9fa;
+            --text-color-dark: #333;
+            --gradient-start: #0068e0; /* Darker Purple */
+            --gradient-end: #8E2DE2;   /* Lighter Purple/Violet */
+            --card-bg: rgba(255, 255, 255, 0.05); /* Slightly transparent white for cards */
+            --card-border: rgba(255, 255, 255, 0.1); /* Subtle white border for cards */
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, var(--gradient-start), var(--gradient-end));
+            color: var(--text-color-light);
+            line-height: 1.6;
+            overflow-x: hidden; /* Prevent horizontal scrollbar */
+            scroll-behavior: smooth; /* Smooth scrolling when clicking nav links */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--text-color-light);
+            margin-bottom: 1em;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            text-align: center;
+            padding-bottom: 0.5em;
+            border-bottom: 2px solid var(--primary-color);
+            margin-bottom: 1.5em;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--secondary-color);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Header and Navigation */
+        header {
+            background: rgba(0, 0, 0, 0.3); /* Semi-transparent black background */
+            position: fixed; /* Stays at the top when scrolling */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100; /* Ensures it stays on top of other content */
+            padding: 15px 0;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between; /* Puts logo on left, nav links on right */
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 25px; /* Spacing between navigation items */
+        }
+
+        .nav-links a {
+            color: var(--text-color-light);
+            font-weight: 500;
+            padding: 8px 0;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            background: var(--primary-color);
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%; /* Underline effect on hover/active */
+        }
+
+        /* Hero Section (Home) */
+        .hero-section {
+            padding: 150px 0 100px; /* Top padding to account for fixed header */
+            position: relative;
+            overflow: hidden; /* Important for containing 3D shapes */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Make sure it takes at least full viewport height */
+        }
+
+        .hero-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px; /* Space between image and text */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            z-index: 10; /* Ensure content is above 3D shapes */
+            position: relative;
+        }
+
+        .hero-image-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+
+        #floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Behind the content */
+            pointer-events: none; /* Allows clicks to pass through to underlying elements */
+        }
+
+        .profile-image-placeholder {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%; /* Makes the image circular */
+            overflow: hidden;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--box-shadow);
+            position: relative;
+            z-index: 2; /* In front of floating shapes */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1); /* Fallback background if image not found */
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures image covers the circular area */
+            display: block;
+        }
+
+        .hero-text {
+            text-align: left;
+            max-width: 500px;
+        }
+
+        .hero-text h1 {
+            font-size: 3em;
+            margin-bottom: 0.5em;
+        }
+
+        .hero-subtitle {
+            color: var(--primary-color);
+            font-size: 1.5em;
+            font-weight: 300;
+            margin-bottom: 1em;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-color-light);
+            font-size: 1.5em;
+            z-index: 10;
+        }
+
+        .scroll-down a {
+            color: var(--text-color-light);
+        }
+
+        .scroll-down i {
+            animation: bounce 1.5s infinite alternate; /* Bouncing arrow animation */
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(10px); }
+        }
+
+        /* Section Common Styles */
+        section {
+            padding: 80px 0;
+            position: relative;
+            z-index: 5; /* Ensures sections are above any main background 3D effects */
+        }
+
+        section h2 {
+            margin-bottom: 40px;
+        }
+
+        /* About Section */
+        .about-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .about-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .about-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .about-card i {
+            font-size: 2em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .about-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        /* Skills Section */
+        .skills-category {
+            margin-bottom: 40px;
+        }
+
+        .skills-category h3 {
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .skill-bar {
+            margin-bottom: 15px;
+        }
+
+        .skill-bar span {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            background-color: rgba(255, 255, 255, 0.1);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            font-size: 0.8em;
+            color: var(--text-color-light);
+            transition: width 0.8s ease-out; /* Smooth fill animation for progress bars */
+        }
+
+        /* Experience Section */
+        .experience-item {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .experience-item h3 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .experience-item h4 {
+            font-size: 1.2em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .experience-duration {
+            color: var(--secondary-color);
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .experience-item ul {
+            padding-left: 20px;
+            list-style: disc;
+        }
+
+        .experience-item li {
+            margin-bottom: 8px;
+        }
+
+        /* Projects Section */
+        .project-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-info {
+            flex-grow: 1;
+        }
+
+        .project-info h3 {
+            font-size: 1.6em;
+            margin-bottom: 10px;
+        }
+
+        .project-description {
+            color: var(--text-color-light);
+            margin-bottom: 15px;
+        }
+
+        .tech-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--text-color-light);
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-right: 5px;
+            font-size: 0.9em;
+        }
+
+        .live-link {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--text-color-light);
+            padding: 10px 20px;
+            border: none; /* Remove default button border */
+            border-radius: 5px;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .live-link:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .project-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: var(--text-color-light);
+        }
+
+        .project-status.live {
+            background-color: #2ecc71; /* Green */
+        }
+
+        .project-status.completed {
+            background-color: #3498db; /* Blue */
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 80px 0;
+        }
+
+        .contact-details, .contact-form {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .contact-details h3, .contact-form h3 {
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .contact-details p {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .contact-details i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .social-links a {
+            display: inline-block;
+            font-size: 1.5em;
+            margin-right: 15px;
+            color: var(--text-color-light); /* Default color for social icons */
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color); /* Hover effect for social icons */
+        }
+
+        .contact-form form {
+            display: grid;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: transparent; /* Transparent input background */
+            color: var(--text-color-light);
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7); /* Placeholder text color */
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(199, 125, 255, 0.25); /* Focus highlight */
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: var(--text-color-light);
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--text-color-light);
+            text-align: center;
+            padding: 30px 0;
+            font-size: 0.9em;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-container {
+                flex-direction: column; /* Stack image and text vertically */
+                text-align: center;
+            }
+
+            .hero-text {
+                text-align: center;
+            }
+
+            .nav-links {
+                flex-direction: column; /* Stack nav links vertically on small screens */
+                align-items: center;
+                margin-top: 15px;
+            }
+
+            .nav-links li {
+                margin: 8px 0; /* Adjust spacing */
+            }
+
+            h1 {
+                font-size: 2.5em;
+            }
+
+            h2 {
+                font-size: 2em;
+            }
+
+            .about-cards {
+                grid-template-columns: 1fr; /* Stack about cards vertically */
+            }
+
+            .project-card {
+                flex-direction: column; /* Stack project info and status vertically */
+                align-items: flex-start;
+            }
+
+            .project-status {
+                position: static; /* Remove absolute positioning */
+                margin-top: 10px; /* Add space below project info */
+            }
+
+            .contact-details, .contact-form {
+                padding: 20px; /* Smaller padding on mobile */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding-top: 120px;
+            }
+
+            .hero-text h1 {
+                font-size: 2em;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2em;
+            }
+
+            header .container {
+                flex-direction: column;
+            }
+
+            .logo {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="container">
+            <div class="logo">Prince Kumar</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero-section">
+            <div class="hero-container container">
+                <div class="hero-image-container">
+                    
+                    <div class="profile-image-placeholder">
+                        <img src="pk.jpg" alt="Prince Kumar" height="500px" class="profile-image">
+                    </div>
+                </div>
+                <div class="hero-text">
+                    <h1>Hi, I'm Prince</h1>
+                    <p class="hero-subtitle">Founder & Entrepreneur</p>
+                    <p>I'm a B.Tech student and founder of TrackMap Innovation Pvt. Ltd. Passionate about creating innovative solutions and building the startup ecosystem.</p>
+                </div>
+            </div>
+            <div class="scroll-down">
+                <a href="#about"><i class="fas fa-chevron-down"></i></a>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <div class="container">
+                <h2>About Me</h2>
+                <div class="about-cards">
+                    <div class="about-card">
+                        <i class="fas fa-code"></i>
+                        <h3>Technical Skills</h3>
+                        <p>Proficient in modern web technologies, mobile development, and system architecture.</p>
+                    </div>
+                    <div class="about-card">
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>Innovation</h3>
+                        <p>Passionate about creating innovative solutions and contributing to the startup ecosystem.</p>
+                    </div>
+                    <div class="about-card">
+                        <i class="fas fa-users"></i>
+                        <h3>Leadership</h3>
+                        <p>Experienced in leading teams, managing projects, and driving organizational growth.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="skills-section">
+            <div class="container">
+                <h2>Skills & Expertise</h2>
+                <div class="skills-category">
+                    <h3>Technical Skills</h3>
+                    <div class="skill-bar">
+                        <span>Frontend Web Development</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 92%; background-color: #FF6B6B;">92%</div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <span>Android Development</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 85%; background-color: #4ECDC4;">85%</div>
+                        </div>
+                    </div>
+
+                    <div class="skill-bar">
+                        <span>Digital Marketing</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 80%; background-color: #FFDA6B;">80%</div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <span>Programming</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 82%; background-color: #5BC0EB;">82%</div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <span>UI/UX Designer</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 76%; background-color: #F8B195;">76%</div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <span>Video Editing</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 75%; background-color: #90EE90;">75%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skills-category">
+                    <h3>Soft Skills</h3>
+                    <div class="skill-bar">
+                        <span>Startup Development</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 95%; background-color: #FF6B6B;">95%</div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <span>Leadership & Management</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 90%; background-color: #4ECDC4;">90%</div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <span>Strategic Planning</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 88%; background-color: #C77DFF;">88%</div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <span>Public Speaking</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 85%; background-color: #FFDA6B;">85%</div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <span>Video Editing</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 78%; background-color: #5BC0EB;">78%</div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <span>Graphic Design</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 75%; background-color: #F8B195;">75%</div>
+                        </div>
+                    </div>
+                    <div class="skill-bar">
+                        <span>Digital Marketing</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 80%; background-color: #90EE90;">80%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="experience-section">
+            <div class="container">
+                <h2>Work Experience</h2>
+                <div class="experience-item">
+                    <h3>Founder & CEO</h3>
+                    <h4>TrackMap Innovation Pvt. Ltd.</h4>
+                    <p class="experience-duration">2024 - Present</p>
+                    <p>Founded a location-based tech startup focused on providing real-time navigation and station-level layout for railway passengers.</p>
+                    <p><strong>Key Achievements:</strong></p>
+                    <ul>
+                        <li>Secured ₹10 Lakh seed funding from Startup Bihar.</li>
+                        <li>Developed MVP with 1000+ beta users.</li>
+                        <li>Led a team of 5 developers and designers.</li>
+                    </ul>
+                </div>
+                <div class="experience-item">
+                    <h3>Student Coordinator</h3>
+                    <h4>Startup Cell</h4>
+                    <p class="experience-duration">2024 - Present</p>
+                    <p>Led and coordinated multiple startup-related events, seminars, and workshops.</p>
+                    <p><strong>Key Achievements:</strong></p>
+                    <ul>
+                        <li>Organized 15+ startup events.</li>
+                        <li>Mentored 30+ student entrepreneurs.</li>
+                        <li>Increased cell membership by 200%.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="projects-section">
+            <div class="container">
+                <h2>Featured Projects</h2>
+                <div class="project-card">
+                    <div class="project-info">
+                        <h3>TrackMap Innovation App</h3>
+                        <p class="project-description">A comprehensive railway navigation system providing real-time updates and digital station layouts.</p>
+                        <p><strong>Technologies Used:</strong> <span class="tech-badge">React Native</span> <span class="tech-badge">Node.js</span> <span class="tech-badge">MongoDB</span> <span class="tech-badge">Google Maps API</span></p>
+                        <a href="#" class="live-link">Live</a>
+                    </div>
+                    <span class="project-status live">Live</span>
+                </div>
+                <div class="project-card">
+                    <div class="project-info">
+                        <h3>Startup Event Management</h3>
+                        <p class="project-description">Organized and managed multiple inter-college startup competitions and workshops.</p>
+                        <p><strong>Technologies Used:</strong> <span class="tech-badge">Event Planning</span> <span class="tech-badge">Team Management</span> <span class="tech-badge">Marketing</span></p>
+                    </div>
+                    <span class="project-status completed">Completed</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <div class="container">
+                <h2>Get In Touch</h2>
+                <div class="contact-details">
+                    <h3>Let's Connect</h3>
+                    <p><i class="fas fa-phone"></i> Phone: <a href="tel:8651318871">8651318871</a></p>
+                    <p><i class="fas fa-envelope"></i> Email: <a href="mailto:kkcworld42@gmail.com">kkcworld42@gmail.com</a></p>
+                    <p><i class="fas fa-map-marker-alt"></i> Location: Kali Bagh Ghusukpur, Bettiah West Champaran</p>
+                    <div class="social-links">
+                        <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3>Send a Message</h3>
+                    <form>
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" name="message" rows="5" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Prince Kumar. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Select all navigation links
+            const navLinks = document.querySelectorAll('nav a');
+            // Select all sections of the page
+            const sections = document.querySelectorAll('section');
+            // Get the container for 3D floating shapes
+            const floatingShapesContainer = document.getElementById('floating-shapes');
+
+            // --- Smooth Scrolling for Navigation Links ---
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault(); // Prevent the default jump behavior
+                    const targetId = this.getAttribute('href'); // Get the ID from the href (e.g., "#about")
+                    const targetSection = document.querySelector(targetId); // Find the corresponding section element
+
+                    if (targetSection) {
+                        // Calculate the scroll position, adjusting for the fixed header
+                        const headerOffset = document.querySelector('header').offsetHeight;
+                        const elementPosition = targetSection.getBoundingClientRect().top + window.pageYOffset;
+                        const offsetPosition = elementPosition - headerOffset;
+
+                        // Smoothly scroll to the target position
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+
+                        // Update active class on nav links immediately
+                        navLinks.forEach(navLink => navLink.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            // --- Highlight Active Navigation Link on Scroll ---
+            // This function runs when the user scrolls the page
+            function updateNavOnScroll() {
+                const scrollY = window.scrollY; // Current vertical scroll position
+
+                sections.forEach(section => {
+                    // Calculate section's top and height, accounting for fixed header
+                    const sectionTop = section.offsetTop - document.querySelector('header').offsetHeight;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id'); // Get the ID of the current section
+                    const correspondingLink = document.querySelector(`nav a[href="#${sectionId}"]`); // Find the nav link for this section
+
+                    // Check if the current scroll position is within this section
+                    if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                        // Remove 'active' class from all links first
+                        navLinks.forEach(link => link.classList.remove('active'));
+                        // Add 'active' class to the link corresponding to the current section
+                        if (correspondingLink) {
+                            correspondingLink.classList.add('active');
+                        }
+                    }
+                });
+            }
+
+            // Attach the scroll event listener
+            window.addEventListener('scroll', updateNavOnScroll);
+            // Call it once on page load to set the initial active link (e.g., if page loaded in middle)
+            updateNavOnScroll();
+
+
+            // --- Three.js for Floating Shapes in Hero Section ---
+            // Check if Three.js library is loaded
+            if (typeof THREE !== 'undefined' && floatingShapesContainer) {
+                // 1. Scene: Where you place objects, lights, and cameras.
+                const scene = new THREE.Scene();
+
+                // 2. Camera: What the user sees. PerspectiveCamera mimics human vision.
+                const camera = new THREE.PerspectiveCamera(
+                    75, // Field of view (degrees)
+                    floatingShapesContainer.clientWidth / floatingShapesContainer.clientHeight, // Aspect ratio
+                    0.1, // Near clipping plane
+                    1000 // Far clipping plane
+                );
+
+                // 3. Renderer: Renders the scene from the camera's perspective onto a canvas.
+                const renderer = new THREE.WebGLRenderer({
+                    alpha: true, // Makes the background transparent
+                    antialias: true // Smooths edges
+                });
+
+                // Set renderer size to match container and add to HTML
+                renderer.setSize(floatingShapesContainer.clientWidth, floatingShapesContainer.clientHeight);
+                renderer.setPixelRatio(window.devicePixelRatio); // For sharp rendering on high-DPI screens
+                floatingShapesContainer.appendChild(renderer.domElement); // Add the generated canvas to the HTML
+
+                // Define different geometries (shapes) for the floating elements
+                const geometries = [
+                    new THREE.BoxGeometry(1, 1, 1), // Cube
+                    new THREE.TorusGeometry(0.5, 0.2, 16, 100), // Donut shape
+                    new THREE.DodecahedronGeometry(0.7), // 12-sided shape
+                    new THREE.SphereGeometry(0.7, 32, 32) // Sphere
+                ];
+
+                // Define different materials (colors/textures) for the shapes
+                const materials = [
+                    new THREE.MeshBasicMaterial({ color: 0xc77dff, transparent: true, opacity: 0.6, wireframe: true }), // Purple wireframe
+                    new THREE.MeshBasicMaterial({ color: 0xff6b6b, transparent: true, opacity: 0.5, wireframe: true }), // Pink wireframe
+                    new THREE.MeshBasicMaterial({ color: 0x4ecdc4, transparent: true, opacity: 0.4, wireframe: true }),  // Teal wireframe
+                    new THREE.MeshBasicMaterial({ color: 0xFFDA6B, transparent: true, opacity: 0.5, wireframe: true })  // Yellow wireframe
+                ];
+
+                const shapes = []; // Array to hold all created 3D shapes
+                const numShapes = 15; // Number of floating shapes to create
+
+                // Create and position the shapes
+                for (let i = 0; i < numShapes; i++) {
+                    // Pick a random geometry and material
+                    const geometry = geometries[Math.floor(Math.random() * geometries.length)];
+                    const material = materials[Math.floor(Math.random() * materials.length)];
+                    const shape = new THREE.Mesh(geometry, material);
+
+                    // Set random initial positions within a certain range
+                    shape.position.x = (Math.random() - 0.5) * 10; // -5 to +5
+                    shape.position.y = (Math.random() - 0.5) * 10;
+                    shape.position.z = (Math.random() - 0.5) * 10;
+
+                    // Set random initial rotations
+                    shape.rotation.x = Math.random() * Math.PI;
+                    shape.rotation.y = Math.random() * Math.PI;
+
+                    scene.add(shape); // Add shape to the scene
+                    shapes.push(shape); // Store shape in the array
+                }
+
+                // Set camera's initial position
+                camera.position.z = 5;
+
+                // Animation Loop: This function is called repeatedly to update the scene
+                function animate() {
+                    requestAnimationFrame(animate); // Request next frame for smooth animation
+
+                    shapes.forEach((shape, index) => {
+                        // Subtle rotation for each shape
+                        shape.rotation.x += 0.005 + (index * 0.0001);
+                        shape.rotation.y += 0.005 + (index * 0.0001);
+
+                        // Gentle floating movement using sine and cosine waves
+                        shape.position.y = Math.sin(Date.now() * 0.0005 + index) * 0.5;
+                        shape.position.x = Math.cos(Date.now() * 0.0007 + index) * 0.5;
+                    });
+
+                    renderer.render(scene, camera); // Render the updated scene
+                }
+
+                animate(); // Start the animation loop
+
+                // Handle window resizing to make the Three.js canvas responsive
+                window.addEventListener('resize', () => {
+                    camera.aspect = floatingShapesContainer.clientWidth / floatingShapesContainer.clientHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(floatingShapesContainer.clientWidth, floatingShapesContainer.clientHeight);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
